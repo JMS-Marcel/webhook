@@ -48,8 +48,14 @@ function callAIApi($message) {
 function sendToMessenger($senderId, $message) {
     $pageAccessToken = env('FACEBOOK_PAGE_ACCESS_TOKEN');
 
-    Http::post("https://graph.facebook.com/v13.0/me/messages?access_token=$pageAccessToken", [
+    $response = Http::post("https://graph.facebook.com/v13.0/me/messages?access_token=$pageAccessToken", [
         'recipient' => ['id' => $senderId],
         'message' => ['text' => $message],
     ]);
+
+    if ($response->successful()) {
+        Log::info('Message envoyé avec succès !');
+    } else {
+        Log::error('Erreur lors de l\'envoi du message : ' . $response->body());
+    }
 }
